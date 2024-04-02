@@ -1,5 +1,42 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Game } from '../pages/Home'
+
+type Product = {
+  id: number
+  price: number
+}
+
+type PurchasePayload = {
+  products: Product[]
+  billing: {
+    name: string
+    email: string
+    document: string
+  }
+  delivery: {
+    email: string
+  }
+  payment: {
+    card: {
+      active: boolean
+      owner?: {
+        name: string
+        document: string
+      }
+      name?: string
+      number: string
+      expires: {
+        month: number
+        year: number
+      }
+      code?: number
+    }
+    installments: number
+  }
+}
+
+type PurchaseResponse = {
+  orderId: string
+}
 
 const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -9,7 +46,7 @@ const api = createApi({
     getFeaturedGame: builder.query<Game, void>({
       query: () => 'destaque'
     }),
-    //criando uma requisição de determinada api "query" significa consulta
+    //criando uma requisição de determinada api "query" significa consulta serve para recuperar dados do servidor
     getOnSale: builder.query<Game[], void>({
       //adicionando promocoes na baseUrl  quando chamado(alte
       query: () => 'promocoes'
@@ -34,6 +71,14 @@ const api = createApi({
     }),
     getGame: builder.query<Game, string>({
       query: (id) => `jogos/${id}`
+    }),
+    //O mutation serve para enviar dados
+    purchase: builder.mutation<PurchaseResponse, PurchasePayload>({
+      query: (body) => ({
+        url: 'checkout',
+        method: 'POST',
+        body: body
+      })
     })
   })
 })
@@ -47,6 +92,7 @@ export const {
   useGetSimulationGamesQuery,
   useGetSportGamesQuery,
   useGetFightGamesQuery,
-  useGetGameQuery
+  useGetGameQuery,
+  usePurchaseMutation
 } = api
 export default api
