@@ -31,7 +31,7 @@ const Header = () => {
           </S.Hamburguer>
           <Link to="/">
             <h1>
-              <img src={logo} alt="EPLAY" />
+              <img src={logo} alt="-" />
             </h1>
           </Link>
           <nav>

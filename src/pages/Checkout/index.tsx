@@ -52,14 +52,14 @@ const Checkout = () => {
     validationSchema: Yup.object({
       //Formulário de dados
       fullName: Yup.string()
+        .matches(/^[A-Za-z ]+$/, 'O nome deve conter apenas letras')
         .min(5, 'O nome precisa ter pelo menos 5 caracteres')
         .required('O campo é obrigatório'),
       email: Yup.string()
         .email('E-mail inválido')
         .required('O campo é obrigatório'),
       cpf: Yup.string()
-        .min(14, 'O campo precisa ter 14 caracteres')
-        .max(15, 'O campo precisa ter 14 caracteres')
+        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato do CPF inválido')
         .required('O campo é obrigatório'),
       deliveryEmail: Yup.string()
         .email('E-mail inválido')
@@ -70,27 +70,39 @@ const Checkout = () => {
       //Pagamentos
       //
       //when é usado pra criar uma validação condicional
-      cardOwner: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cpfCardOwner: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
+      cardOwner: Yup.string()
+        .matches(/^[A-Za-z ]+$/, 'O nome deve conter apenas letras')
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
+      cpfCardOwner: Yup.string()
+        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato do CPF inválido')
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
       cardDisplayName: Yup.string().when((values, schema) =>
         payWithCard ? schema.required('O campo é obrigatório') : schema
       ),
-      cardNumber: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      expiresMonth: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      expiresYear: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cardCode: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
+      cardNumber: Yup.string()
+        .matches(/^\d{4} \d{4} \d{4} \d{4}$/)
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
+      expiresMonth: Yup.string()
+        .matches(/^\d{2}$/)
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
+      expiresYear: Yup.string()
+        .matches(/^\d{2}$/)
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
+      cardCode: Yup.string()
+        .matches(/^\d{3}$/)
+        .when((values, schema) =>
+          payWithCard ? schema.required('O campo é obrigatório') : schema
+        ),
       installments: Yup.number().when((values, schema) =>
         payWithCard ? schema.required('O campo é obrigatório') : schema
       )
